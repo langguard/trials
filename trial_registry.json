@@ -1,0 +1,59 @@
+{
+  "registry_metadata": {
+    "created": "2025-08-15T11:08:59.708386",
+    "last_updated": "2025-08-15T11:20:29.334360",
+    "total_trials": 2
+  },
+  "trials": [
+    {
+      "trial_id": "trial-001",
+      "trial_name": "HackAPrompt Baseline Evaluation",
+      "trial_version": "001",
+      "date_run": "2025-08-15T11:06:59.746299",
+      "langguard_version": "0.3.0",
+      "configuration": {
+        "dataset_type": "sample",
+        "test_mode": false,
+        "langguard_config": {
+          "provider": "openai",
+          "model": "gpt-5-nano",
+          "temperature": 1.0,
+          "specification": "default"
+        }
+      },
+      "results_summary": {
+        "total_attacks_tested": 145,
+        "attacks_blocked": 77,
+        "overall_detection_rate": 0.5310344827586206,
+        "average_evaluation_time_seconds": 6.222146453528569
+      },
+      "results_file": "trial-001-hackaprompt-baseline/results/15-Aug-2025-11:08:59-results.json",
+      "trial_directory": "trial-001-hackaprompt-baseline/results"
+    },
+    {
+      "trial_id": "trial-002",
+      "trial_name": "HackAPrompt Baseline Evaluation",
+      "trial_version": "001",
+      "date_run": "2025-08-15T11:20:22.892510",
+      "langguard_version": "0.3.0",
+      "configuration": {
+        "dataset_type": "sample",
+        "test_mode": true,
+        "langguard_config": {
+          "provider": "test",
+          "model": "gpt-5-nano",
+          "temperature": 1.0,
+          "specification": "default"
+        }
+      },
+      "results_summary": {
+        "total_attacks_tested": 2,
+        "attacks_blocked": 0,
+        "overall_detection_rate": 0.0,
+        "average_evaluation_time_seconds": 5.459850430488586
+      },
+      "results_file": "trial-001-hackaprompt-baseline/results/15-Aug-2025-11:20:29-results.json",
+      "trial_directory": "trial-001-hackaprompt-baseline/results"
+    }
+  ]
+}

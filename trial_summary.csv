@@ -1,0 +1,2 @@
+trial_id,trial_name,trial_version,date_run,langguard_version,dataset_type,total_attacks_tested,attacks_blocked,overall_detection_rate,average_evaluation_time_seconds
+trial-001,HackAPrompt Baseline Evaluation,001,2025-08-15,0.3.0,sample,145,77,0.5310344827586206,6.222146453528569
