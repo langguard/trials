@@ -186,11 +186,6 @@ Each trial generates timestamped results in `results/DD-MMM-YYYY-HH:MM:SS-result
 - Sample dataset: ~2-3 minutes
 - Full dataset: ~6-7 hours
 
-### **Cost Estimation (GPT-5-nano)**
-- $0.05/1M input tokens, $0.40/1M output tokens
-- Sample dataset (145 attacks): ~$0.02
-- Full dataset (77,936 attacks): ~$11
-
 ## Analysis Workflow
 
 1. **Run Baseline Trial**: Establish current performance
