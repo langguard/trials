@@ -1,0 +1,4 @@
+langguard
+pandas>=2.0.0
+pyarrow>=10.0.0
+huggingface-hub>=0.16.0

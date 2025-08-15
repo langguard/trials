@@ -62,6 +62,7 @@ class TrialRegistry:
         # Extract key information for registry
         trial_metadata = trial_data.get("trial_metadata", {})
         summary = trial_data.get("summary", {})
+        model_info = trial_metadata.get("model_info", {})
         
         # Create registry entry
         registry_entry = {
@@ -70,6 +71,7 @@ class TrialRegistry:
             "trial_version": trial_metadata.get("version", "unknown"),
             "date_run": trial_metadata.get("timestamp", datetime.now().isoformat()),
             "langguard_version": LANGGUARD_VERSION,
+            "model_info": model_info,
             "configuration": {
                 "dataset_type": trial_metadata.get("dataset_type", "unknown"),
                 "test_mode": trial_metadata.get("test_mode", False),
@@ -131,9 +133,11 @@ class TrialRegistry:
                 version = trial["trial_version"]
                 detection_rate = trial["results_summary"]["overall_detection_rate"]
                 langguard_ver = trial["langguard_version"]
+                model_info = trial.get("model_info", {})
+                model_name = model_info.get("actual_model", model_info.get("configured_model", "unknown"))
                 
                 print(f"   {trial['trial_id']} | {date} | {name} v{version}")
-                print(f"      Detection Rate: {detection_rate:.1%} | LangGuard: {langguard_ver}")
+                print(f"      Detection Rate: {detection_rate:.1%} | LangGuard: {langguard_ver} | Model: {model_name}")
                 print()
     
     def export_summary_csv(self, output_file: str = "trial_summary.csv"):
@@ -145,7 +149,7 @@ class TrialRegistry:
         with open(output_path, 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = [
                 'trial_id', 'trial_name', 'trial_version', 'date_run', 
-                'langguard_version', 'dataset_type', 'total_attacks_tested',
+                'langguard_version', 'model_name', 'model_provider', 'dataset_type', 'total_attacks_tested',
                 'attacks_blocked', 'overall_detection_rate', 'average_evaluation_time_seconds'
             ]
             
@@ -153,12 +157,18 @@ class TrialRegistry:
             writer.writeheader()
             
             for trial in self.registry["trials"]:
+                model_info = trial.get("model_info", {})
+                model_name = model_info.get("actual_model", model_info.get("configured_model", "unknown"))
+                model_provider = model_info.get("provider", "unknown")
+                
                 row = {
                     'trial_id': trial['trial_id'],
                     'trial_name': trial['trial_name'],
                     'trial_version': trial['trial_version'],
                     'date_run': trial['date_run'][:10],
                     'langguard_version': trial['langguard_version'],
+                    'model_name': model_name,
+                    'model_provider': model_provider,
                     'dataset_type': trial['configuration']['dataset_type'],
                     'total_attacks_tested': trial['results_summary']['total_attacks_tested'],
                     'attacks_blocked': trial['results_summary']['attacks_blocked'],

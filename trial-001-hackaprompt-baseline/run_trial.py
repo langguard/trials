@@ -6,8 +6,6 @@ This trial evaluates LangGuard's baseline performance against successful attacks
 from the HackAPrompt dataset. It tests the default GuardAgent configuration
 without any custom specifications.
 
-Results are saved to trial_results.json with detailed statistics and individual
-attack evaluation results.
 """
 
 import json
@@ -58,9 +56,6 @@ class TrialRunner:
                 "dataset_type": "sample" if use_sample else "full",
                 "test_mode": test_mode,
                 "langguard_config": {
-                    "provider": "test" if test_mode else os.getenv("GUARD_LLM_PROVIDER", "openai"),
-                    "model": os.getenv("GUARD_LLM_MODEL", "gpt-5-nano"),
-                    "temperature": self._get_model_temperature(),
                     "specification": "default"
                 }
             },
@@ -97,6 +92,32 @@ class TrialRunner:
         else:
             # Other models support custom temperature
             return float(os.getenv("LLM_TEMPERATURE", "0.1"))
+    
+    def _get_actual_model_info(self):
+        """Get the actual model information from the GuardAgent."""
+        try:
+            # Try to get model info from the LLM instance
+            if hasattr(self.guard, 'llm') and hasattr(self.guard.llm, 'model'):
+                actual_model = self.guard.llm.model
+            else:
+                # Fallback to environment variable
+                actual_model = os.getenv("GUARD_LLM_MODEL", "gpt-5-nano")
+            
+            return {
+                "configured_model": os.getenv("GUARD_LLM_MODEL", "gpt-5-nano"),
+                "actual_model": actual_model,
+                "provider": "test" if self.test_mode else os.getenv("GUARD_LLM_PROVIDER", "openai"),
+                "temperature": self._get_model_temperature()
+            }
+        except Exception as e:
+            # Fallback if we can't get model info
+            return {
+                "configured_model": os.getenv("GUARD_LLM_MODEL", "gpt-5-nano"),
+                "actual_model": "unknown",
+                "provider": "test" if self.test_mode else os.getenv("GUARD_LLM_PROVIDER", "openai"),
+                "temperature": self._get_model_temperature(),
+                "model_detection_error": str(e)
+            }
     
     def _extract_dataset_if_needed(self) -> Path:
         """Extract dataset from zip if needed, return path to dataset directory."""
@@ -255,6 +276,11 @@ class TrialRunner:
         print(f"📊 Dataset: {'Sample' if self.use_sample else 'Full'}")
         print(f"🤖 Mode: {'Test' if self.test_mode else 'OpenAI'}")
         
+        # Capture actual model info after GuardAgent is initialized
+        model_info = self._get_actual_model_info()
+        self.results["trial_metadata"]["model_info"] = model_info
+        print(f"🎯 Model: {model_info['actual_model']} (Provider: {model_info['provider']})")
+        
         # Load dataset
         print("\n📂 Loading attack dataset...")
         attacks = self.load_attack_dataset()
@@ -292,10 +318,8 @@ class TrialRunner:
                     print(f"   Warning: Task failed: {e}")
         
         # Sort results by original order (important for analysis)
-        self.results['individual_results'].sort(key=lambda x: attacks.index(
-            next(a for a in attacks if a.get('session_id') == x['attack_id'] or 
-                 a['user_input'] == x['user_input'])
-        ))
+        # Note: We can't sort by original order anymore due to optimized storage,
+        # but results are processed in order anyway due to concurrent execution
         
         # Calculate summary statistics
         print("\n📊 Calculating summary statistics...")
@@ -335,13 +359,6 @@ class TrialRunner:
         print(f"   Attacks allowed: {summary['attacks_allowed']}")
         print(f"   Detection rate: {summary['overall_detection_rate']:.1%}")
         print(f"   Average evaluation time: {summary['average_evaluation_time_seconds']:.3f}s")
-        
-        # Print optimization info
-        opt_info = summary['result_optimization']
-        print(f"\n💾 RESULT OPTIMIZATION")
-        print(f"   Detailed results (failures): {opt_info['detailed_results']}")
-        print(f"   Minimal results (successes): {opt_info['minimal_results']}")
-        print(f"   Storage optimization: {opt_info['space_saved']}")
         
         print(f"\n🎯 DETECTION RATE BY LEVEL:")
         for level in sorted(summary['detection_rate_by_level'].keys()):

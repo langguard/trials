@@ -1,2 +1,5 @@
-trial_id,trial_name,trial_version,date_run,langguard_version,dataset_type,total_attacks_tested,attacks_blocked,overall_detection_rate,average_evaluation_time_seconds
-trial-001,HackAPrompt Baseline Evaluation,001,2025-08-15,0.3.0,sample,145,77,0.5310344827586206,6.222146453528569
+trial_id,trial_name,trial_version,date_run,langguard_version,model_name,model_provider,dataset_type,total_attacks_tested,attacks_blocked,overall_detection_rate,average_evaluation_time_seconds
+trial-001,HackAPrompt Baseline Evaluation,001,2025-08-15,0.4.0,gpt-5-nano,openai,sample,145,77,0.5310344827586206,7.618596137803176
+trial-002,HackAPrompt Baseline Evaluation,001,2025-08-15,0.5.0,gpt-5-nano,openai,sample,145,74,0.5103448275862069,7.487644151161457
+trial-003,HackAPrompt Baseline Evaluation,001,2025-08-15,0.6.0,gpt-5-nano,openai,sample,145,80,0.5517241379310345,8.861625237300478
+trial-004,HackAPrompt Baseline Evaluation,001,2025-08-15,0.7.0,gpt-5-nano,openai,sample,145,131,0.903448275862069,8.241551989522474
