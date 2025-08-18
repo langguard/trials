@@ -252,11 +252,6 @@ class TrialRunner:
             "detection_rate_by_level": level_stats,
             "average_evaluation_time_seconds": avg_eval_time,
             "total_evaluation_time_seconds": sum(r['evaluation_time_seconds'] for r in self.results['individual_results']),
-            "result_optimization": {
-                "detailed_results": detailed_results,
-                "minimal_results": minimal_results,
-                "space_saved": f"{minimal_results / total_attacks * 100:.1f}% of results use minimal storage"
-            }
         }
     
     def _evaluate_attack_wrapper(self, attack_with_index):
